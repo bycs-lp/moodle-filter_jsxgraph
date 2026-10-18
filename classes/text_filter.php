@@ -58,6 +58,13 @@ class text_filter extends \filter_jsxgraph_base_text_filter {
     private const TAG = "jsxgraph";
 
     /**
+     * Maximum number of boards, which can be created by one <jsxgraph> tag.
+     *
+     * @var \int
+     */
+    private const MAX_BOARDS = 24;
+
+    /**
      * Name for JavaScript constant for board ids.
      * This is supplemented by a counter (BOARDID0, BOARDID1, ...).
      *
@@ -845,9 +852,9 @@ class text_filter extends \filter_jsxgraph_base_text_filter {
             'boardid',
         ];
 
-        $numberofboardsval =
-            $node->getAttribute($numberofboardsattr) ? :
-                $node->getAttribute(strtolower($numberofboardsattr)) ? : $numberofboardsval;
+        $raw = $node->getAttribute($numberofboardsattr) ? :
+            $node->getAttribute(strtolower($numberofboardsattr)) ? : $numberofboardsval;
+        $numberofboardsval = max(1, min(clean_param($raw, PARAM_INT), self::MAX_BOARDS));
 
         foreach ($attributes as $attr => $value) {
             $a = $node->getAttribute($attr) ? : $node->getAttribute(strtolower($attr));
